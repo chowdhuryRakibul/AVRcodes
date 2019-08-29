@@ -1,0 +1,642 @@
+
+example.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000002fa  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  0000034e  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  0000034e  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000380  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000020  00000000  00000000  000003bc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00001296  00000000  00000000  000003dc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00000722  00000000  00000000  00001672  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000004bb  00000000  00000000  00001d94  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000034  00000000  00000000  00002250  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000004c6  00000000  00000000  00002284  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    000009ae  00000000  00000000  0000274a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000010  00000000  00000000  000030f8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 36 00 	call	0x6c	; 0x6c <main>
+  64:	0c 94 7b 01 	jmp	0x2f6	; 0x2f6 <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <main>:
+
+#define lcd_port PORTC
+#define lcd_DDR DDRC
+
+int main()
+{
+  6c:	cf 93       	push	r28
+  6e:	df 93       	push	r29
+  70:	cd b7       	in	r28, 0x3d	; 61
+  72:	de b7       	in	r29, 0x3e	; 62
+  74:	60 97       	sbiw	r28, 0x10	; 16
+  76:	0f b6       	in	r0, 0x3f	; 63
+  78:	f8 94       	cli
+  7a:	de bf       	out	0x3e, r29	; 62
+  7c:	0f be       	out	0x3f, r0	; 63
+  7e:	cd bf       	out	0x3d, r28	; 61
+		D5 = data5;
+		D6 = data6;
+		D7 = data7;
+
+		//make the lcd pins output
+		lcd_DDR = lcd_DDR | (1<<RS) | (1<<E) | (1<<D4) | (1<<D5) | (1<<D6) | (1<<D7);
+  80:	84 b3       	in	r24, 0x14	; 20
+  82:	83 6f       	ori	r24, 0xF3	; 243
+  84:	84 bb       	out	0x14, r24	; 20
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  86:	2f ef       	ldi	r18, 0xFF	; 255
+  88:	39 ef       	ldi	r19, 0xF9	; 249
+  8a:	80 e0       	ldi	r24, 0x00	; 0
+  8c:	21 50       	subi	r18, 0x01	; 1
+  8e:	30 40       	sbci	r19, 0x00	; 0
+  90:	80 40       	sbci	r24, 0x00	; 0
+  92:	e1 f7       	brne	.-8      	; 0x8c <main+0x20>
+  94:	00 c0       	rjmp	.+0      	; 0x96 <main+0x2a>
+  96:	00 00       	nop
+class lcd{
+	private:
+	int RS, E, D4, D5, D6, D7;
+	void send_cmd(unsigned char cmd)
+	{
+		lcd_port = (lcd_port & 0x0F) | (cmd & 0xF0); //sending the higher nibble of the cmd to the last 4 pins of lcd_port
+  98:	85 b3       	in	r24, 0x15	; 21
+  9a:	8f 70       	andi	r24, 0x0F	; 15
+  9c:	85 bb       	out	0x15, r24	; 21
+		lcd_port &= ~(1<<RS); //command register select (0)
+  9e:	a8 98       	cbi	0x15, 0	; 21
+		lcd_port |= (1<<E); //making enable pin high, ready for receiving data
+  a0:	a9 9a       	sbi	0x15, 1	; 21
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  a2:	95 e3       	ldi	r25, 0x35	; 53
+  a4:	9a 95       	dec	r25
+  a6:	f1 f7       	brne	.-4      	; 0xa4 <main+0x38>
+  a8:	00 00       	nop
+		_delay_us(10);
+		lcd_port &= ~(1<<E); //turning off the Enable pin
+  aa:	a9 98       	cbi	0x15, 1	; 21
+  ac:	af e1       	ldi	r26, 0x1F	; 31
+  ae:	b3 e0       	ldi	r27, 0x03	; 3
+  b0:	11 97       	sbiw	r26, 0x01	; 1
+  b2:	f1 f7       	brne	.-4      	; 0xb0 <main+0x44>
+  b4:	00 c0       	rjmp	.+0      	; 0xb6 <main+0x4a>
+  b6:	00 00       	nop
+		
+		_delay_us(200);
+		lcd_port = (lcd_port & 0x0F) | (cmd << 4); //sending the higher nibble of the cmd to the last 4 pins of lcd_port
+  b8:	85 b3       	in	r24, 0x15	; 21
+  ba:	8f 70       	andi	r24, 0x0F	; 15
+  bc:	80 62       	ori	r24, 0x20	; 32
+  be:	85 bb       	out	0x15, r24	; 21
+		lcd_port &= ~(1<<RS); //command register select (0)
+  c0:	a8 98       	cbi	0x15, 0	; 21
+		lcd_port |= (1<<E); //making enable pin high, ready for receiving data
+  c2:	a9 9a       	sbi	0x15, 1	; 21
+  c4:	b5 e3       	ldi	r27, 0x35	; 53
+  c6:	ba 95       	dec	r27
+  c8:	f1 f7       	brne	.-4      	; 0xc6 <main+0x5a>
+  ca:	00 00       	nop
+		_delay_us(10);
+		lcd_port &= ~(1<<E); //turning off the enable pin
+  cc:	a9 98       	cbi	0x15, 1	; 21
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  ce:	8f e1       	ldi	r24, 0x1F	; 31
+  d0:	9e e4       	ldi	r25, 0x4E	; 78
+  d2:	01 97       	sbiw	r24, 0x01	; 1
+  d4:	f1 f7       	brne	.-4      	; 0xd2 <main+0x66>
+  d6:	00 c0       	rjmp	.+0      	; 0xd8 <main+0x6c>
+  d8:	00 00       	nop
+class lcd{
+	private:
+	int RS, E, D4, D5, D6, D7;
+	void send_cmd(unsigned char cmd)
+	{
+		lcd_port = (lcd_port & 0x0F) | (cmd & 0xF0); //sending the higher nibble of the cmd to the last 4 pins of lcd_port
+  da:	85 b3       	in	r24, 0x15	; 21
+  dc:	8f 70       	andi	r24, 0x0F	; 15
+  de:	80 62       	ori	r24, 0x20	; 32
+  e0:	85 bb       	out	0x15, r24	; 21
+		lcd_port &= ~(1<<RS); //command register select (0)
+  e2:	a8 98       	cbi	0x15, 0	; 21
+		lcd_port |= (1<<E); //making enable pin high, ready for receiving data
+  e4:	a9 9a       	sbi	0x15, 1	; 21
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  e6:	95 e3       	ldi	r25, 0x35	; 53
+  e8:	9a 95       	dec	r25
+  ea:	f1 f7       	brne	.-4      	; 0xe8 <main+0x7c>
+  ec:	00 00       	nop
+		_delay_us(10);
+		lcd_port &= ~(1<<E); //turning off the Enable pin
+  ee:	a9 98       	cbi	0x15, 1	; 21
+  f0:	af e1       	ldi	r26, 0x1F	; 31
+  f2:	b3 e0       	ldi	r27, 0x03	; 3
+  f4:	11 97       	sbiw	r26, 0x01	; 1
+  f6:	f1 f7       	brne	.-4      	; 0xf4 <main+0x88>
+  f8:	00 c0       	rjmp	.+0      	; 0xfa <main+0x8e>
+  fa:	00 00       	nop
+		
+		_delay_us(200);
+		lcd_port = (lcd_port & 0x0F) | (cmd << 4); //sending the higher nibble of the cmd to the last 4 pins of lcd_port
+  fc:	85 b3       	in	r24, 0x15	; 21
+  fe:	8f 70       	andi	r24, 0x0F	; 15
+ 100:	80 68       	ori	r24, 0x80	; 128
+ 102:	85 bb       	out	0x15, r24	; 21
+		lcd_port &= ~(1<<RS); //command register select (0)
+ 104:	a8 98       	cbi	0x15, 0	; 21
+		lcd_port |= (1<<E); //making enable pin high, ready for receiving data
+ 106:	a9 9a       	sbi	0x15, 1	; 21
+ 108:	b5 e3       	ldi	r27, 0x35	; 53
+ 10a:	ba 95       	dec	r27
+ 10c:	f1 f7       	brne	.-4      	; 0x10a <main+0x9e>
+ 10e:	00 00       	nop
+		_delay_us(10);
+		lcd_port &= ~(1<<E); //turning off the enable pin
+ 110:	a9 98       	cbi	0x15, 1	; 21
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 112:	8f e1       	ldi	r24, 0x1F	; 31
+ 114:	9e e4       	ldi	r25, 0x4E	; 78
+ 116:	01 97       	sbiw	r24, 0x01	; 1
+ 118:	f1 f7       	brne	.-4      	; 0x116 <main+0xaa>
+ 11a:	00 c0       	rjmp	.+0      	; 0x11c <main+0xb0>
+ 11c:	00 00       	nop
+class lcd{
+	private:
+	int RS, E, D4, D5, D6, D7;
+	void send_cmd(unsigned char cmd)
+	{
+		lcd_port = (lcd_port & 0x0F) | (cmd & 0xF0); //sending the higher nibble of the cmd to the last 4 pins of lcd_port
+ 11e:	85 b3       	in	r24, 0x15	; 21
+ 120:	8f 70       	andi	r24, 0x0F	; 15
+ 122:	85 bb       	out	0x15, r24	; 21
+		lcd_port &= ~(1<<RS); //command register select (0)
+ 124:	a8 98       	cbi	0x15, 0	; 21
+		lcd_port |= (1<<E); //making enable pin high, ready for receiving data
+ 126:	a9 9a       	sbi	0x15, 1	; 21
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 128:	95 e3       	ldi	r25, 0x35	; 53
+ 12a:	9a 95       	dec	r25
+ 12c:	f1 f7       	brne	.-4      	; 0x12a <main+0xbe>
+ 12e:	00 00       	nop
+		_delay_us(10);
+		lcd_port &= ~(1<<E); //turning off the Enable pin
+ 130:	a9 98       	cbi	0x15, 1	; 21
+ 132:	af e1       	ldi	r26, 0x1F	; 31
+ 134:	b3 e0       	ldi	r27, 0x03	; 3
+ 136:	11 97       	sbiw	r26, 0x01	; 1
+ 138:	f1 f7       	brne	.-4      	; 0x136 <main+0xca>
+ 13a:	00 c0       	rjmp	.+0      	; 0x13c <main+0xd0>
+ 13c:	00 00       	nop
+		
+		_delay_us(200);
+		lcd_port = (lcd_port & 0x0F) | (cmd << 4); //sending the higher nibble of the cmd to the last 4 pins of lcd_port
+ 13e:	85 b3       	in	r24, 0x15	; 21
+ 140:	8f 70       	andi	r24, 0x0F	; 15
+ 142:	80 6c       	ori	r24, 0xC0	; 192
+ 144:	85 bb       	out	0x15, r24	; 21
+		lcd_port &= ~(1<<RS); //command register select (0)
+ 146:	a8 98       	cbi	0x15, 0	; 21
+		lcd_port |= (1<<E); //making enable pin high, ready for receiving data
+ 148:	a9 9a       	sbi	0x15, 1	; 21
+ 14a:	b5 e3       	ldi	r27, 0x35	; 53
+ 14c:	ba 95       	dec	r27
+ 14e:	f1 f7       	brne	.-4      	; 0x14c <main+0xe0>
+ 150:	00 00       	nop
+		_delay_us(10);
+		lcd_port &= ~(1<<E); //turning off the enable pin
+ 152:	a9 98       	cbi	0x15, 1	; 21
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 154:	8f e1       	ldi	r24, 0x1F	; 31
+ 156:	9e e4       	ldi	r25, 0x4E	; 78
+ 158:	01 97       	sbiw	r24, 0x01	; 1
+ 15a:	f1 f7       	brne	.-4      	; 0x158 <main+0xec>
+ 15c:	00 c0       	rjmp	.+0      	; 0x15e <main+0xf2>
+ 15e:	00 00       	nop
+class lcd{
+	private:
+	int RS, E, D4, D5, D6, D7;
+	void send_cmd(unsigned char cmd)
+	{
+		lcd_port = (lcd_port & 0x0F) | (cmd & 0xF0); //sending the higher nibble of the cmd to the last 4 pins of lcd_port
+ 160:	85 b3       	in	r24, 0x15	; 21
+ 162:	8f 70       	andi	r24, 0x0F	; 15
+ 164:	85 bb       	out	0x15, r24	; 21
+		lcd_port &= ~(1<<RS); //command register select (0)
+ 166:	a8 98       	cbi	0x15, 0	; 21
+		lcd_port |= (1<<E); //making enable pin high, ready for receiving data
+ 168:	a9 9a       	sbi	0x15, 1	; 21
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 16a:	95 e3       	ldi	r25, 0x35	; 53
+ 16c:	9a 95       	dec	r25
+ 16e:	f1 f7       	brne	.-4      	; 0x16c <main+0x100>
+ 170:	00 00       	nop
+		_delay_us(10);
+		lcd_port &= ~(1<<E); //turning off the Enable pin
+ 172:	a9 98       	cbi	0x15, 1	; 21
+ 174:	af e1       	ldi	r26, 0x1F	; 31
+ 176:	b3 e0       	ldi	r27, 0x03	; 3
+ 178:	11 97       	sbiw	r26, 0x01	; 1
+ 17a:	f1 f7       	brne	.-4      	; 0x178 <main+0x10c>
+ 17c:	00 c0       	rjmp	.+0      	; 0x17e <main+0x112>
+ 17e:	00 00       	nop
+		
+		_delay_us(200);
+		lcd_port = (lcd_port & 0x0F) | (cmd << 4); //sending the higher nibble of the cmd to the last 4 pins of lcd_port
+ 180:	85 b3       	in	r24, 0x15	; 21
+ 182:	8f 70       	andi	r24, 0x0F	; 15
+ 184:	80 61       	ori	r24, 0x10	; 16
+ 186:	85 bb       	out	0x15, r24	; 21
+		lcd_port &= ~(1<<RS); //command register select (0)
+ 188:	a8 98       	cbi	0x15, 0	; 21
+		lcd_port |= (1<<E); //making enable pin high, ready for receiving data
+ 18a:	a9 9a       	sbi	0x15, 1	; 21
+ 18c:	b5 e3       	ldi	r27, 0x35	; 53
+ 18e:	ba 95       	dec	r27
+ 190:	f1 f7       	brne	.-4      	; 0x18e <main+0x122>
+ 192:	00 00       	nop
+		_delay_us(10);
+		lcd_port &= ~(1<<E); //turning off the enable pin
+ 194:	a9 98       	cbi	0x15, 1	; 21
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 196:	8f e1       	ldi	r24, 0x1F	; 31
+ 198:	9e e4       	ldi	r25, 0x4E	; 78
+ 19a:	01 97       	sbiw	r24, 0x01	; 1
+ 19c:	f1 f7       	brne	.-4      	; 0x19a <main+0x12e>
+ 19e:	00 c0       	rjmp	.+0      	; 0x1a0 <main+0x134>
+ 1a0:	00 00       	nop
+{
+	public:
+		adc()
+		{
+			//AREF = AVcc, ADLAR = 0
+			ADMUX |= (1<<REFS0);
+ 1a2:	3e 9a       	sbi	0x07, 6	; 7
+			
+			//ADC Enable and pre-scaler of 128
+			//16000000/128 = 125000 -> 125kHz
+			//ADATE, ADIF, ADIE -> 0
+			ADCSRA = (1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
+ 1a4:	87 e8       	ldi	r24, 0x87	; 135
+ 1a6:	86 b9       	out	0x06, r24	; 6
+ 1a8:	af e3       	ldi	r26, 0x3F	; 63
+ 1aa:	bc e9       	ldi	r27, 0x9C	; 156
+ 1ac:	11 97       	sbiw	r26, 0x01	; 1
+ 1ae:	f1 f7       	brne	.-4      	; 0x1ac <main+0x140>
+ 1b0:	00 c0       	rjmp	.+0      	; 0x1b2 <main+0x146>
+ 1b2:	00 00       	nop
+		{
+			int result = 0;
+			// select the corresponding channel 0~7
+			// ANDing with '7' will always keep the value of 'ch' between 0 and 7
+			ch &= 0x07;  // AND operation with 7 -> 0000 0111
+			ADMUX = (ADMUX & 0xF8) | ch;     // clears the bottom 3 bits before ORing F8 -> 1111 1000
+ 1b4:	87 b1       	in	r24, 0x07	; 7
+ 1b6:	88 7f       	andi	r24, 0xF8	; 248
+ 1b8:	87 b9       	out	0x07, r24	; 7
+			
+			// start single conversion
+			// write '1' to ADSC
+			ADCSRA |= (1<<ADSC);
+ 1ba:	36 9a       	sbi	0x06, 6	; 6
+			
+			// wait for conversion to complete
+			// ADSC becomes '0' again
+			// till then, run loop continuously
+			while(ADCSRA & (1<<ADSC));
+ 1bc:	36 99       	sbic	0x06, 6	; 6
+ 1be:	fe cf       	rjmp	.-4      	; 0x1bc <main+0x150>
+			result = result | (ADCL) | (ADCH<<8); //As ADLR = 0
+ 1c0:	84 b1       	in	r24, 0x04	; 4
+ 1c2:	25 b1       	in	r18, 0x05	; 5
+    } else if (__radix < 2 || __radix > 36) {
+	*__s = 0;
+	return __s;
+    } else {
+	extern char *__itoa_ncheck (int, char *, unsigned char);
+	return __itoa_ncheck (__val, __s, __radix);
+ 1c4:	90 e0       	ldi	r25, 0x00	; 0
+ 1c6:	4a e0       	ldi	r20, 0x0A	; 10
+ 1c8:	be 01       	movw	r22, r28
+ 1ca:	6f 5f       	subi	r22, 0xFF	; 255
+ 1cc:	7f 4f       	sbci	r23, 0xFF	; 255
+ 1ce:	92 2b       	or	r25, r18
+ 1d0:	0e 94 46 01 	call	0x28c	; 0x28c <__itoa_ncheck>
+		_delay_ms(5);
+	}
+	void print(char *str)
+	{
+		int i;
+		for(i=0;str[i]!=0;i++)		// Send each char of string till the NULL
+ 1d4:	99 81       	ldd	r25, Y+1	; 0x01
+ 1d6:	99 23       	and	r25, r25
+ 1d8:	71 f1       	breq	.+92     	; 0x236 <main+0x1ca>
+ 1da:	fe 01       	movw	r30, r28
+ 1dc:	32 96       	adiw	r30, 0x02	; 2
+		send_cmd(0x01); // Clear Display
+	}
+	
+	void printCh(unsigned char str)
+	{
+		lcd_port = (lcd_port & 0x0F) | (str & 0xF0); // Sending upper nibble
+ 1de:	85 b3       	in	r24, 0x15	; 21
+ 1e0:	8f 70       	andi	r24, 0x0F	; 15
+ 1e2:	29 2f       	mov	r18, r25
+ 1e4:	20 7f       	andi	r18, 0xF0	; 240
+ 1e6:	82 2b       	or	r24, r18
+ 1e8:	85 bb       	out	0x15, r24	; 21
+		lcd_port |= (1<<RS);  // RS=1, data reg.
+ 1ea:	a8 9a       	sbi	0x15, 0	; 21
+		lcd_port|= (1<<E); //turn on the enable pin
+ 1ec:	a9 9a       	sbi	0x15, 1	; 21
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 1ee:	b5 e0       	ldi	r27, 0x05	; 5
+ 1f0:	ba 95       	dec	r27
+ 1f2:	f1 f7       	brne	.-4      	; 0x1f0 <main+0x184>
+ 1f4:	00 00       	nop
+		_delay_us(1);
+		lcd_port &= ~ (1<<E); //turn off the enable pin
+ 1f6:	a9 98       	cbi	0x15, 1	; 21
+ 1f8:	af e1       	ldi	r26, 0x1F	; 31
+ 1fa:	b3 e0       	ldi	r27, 0x03	; 3
+ 1fc:	11 97       	sbiw	r26, 0x01	; 1
+ 1fe:	f1 f7       	brne	.-4      	; 0x1fc <main+0x190>
+ 200:	00 c0       	rjmp	.+0      	; 0x202 <main+0x196>
+ 202:	00 00       	nop
+		_delay_us(200);
+		
+		lcd_port = (lcd_port & 0x0F) | (str <<4); // Sending upper nibble
+ 204:	85 b3       	in	r24, 0x15	; 21
+ 206:	28 2f       	mov	r18, r24
+ 208:	2f 70       	andi	r18, 0x0F	; 15
+ 20a:	b0 e1       	ldi	r27, 0x10	; 16
+ 20c:	9b 9f       	mul	r25, r27
+ 20e:	c0 01       	movw	r24, r0
+ 210:	11 24       	eor	r1, r1
+ 212:	82 2b       	or	r24, r18
+ 214:	85 bb       	out	0x15, r24	; 21
+		lcd_port |= (1<<RS);  // RS=1, data reg.
+ 216:	a8 9a       	sbi	0x15, 0	; 21
+		lcd_port|= (1<<E); //turn on the enable pin
+ 218:	a9 9a       	sbi	0x15, 1	; 21
+ 21a:	25 e0       	ldi	r18, 0x05	; 5
+ 21c:	2a 95       	dec	r18
+ 21e:	f1 f7       	brne	.-4      	; 0x21c <main+0x1b0>
+ 220:	00 00       	nop
+		_delay_us(1);
+		lcd_port &= ~ (1<<E); //turn off the enable pin
+ 222:	a9 98       	cbi	0x15, 1	; 21
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 224:	8f e1       	ldi	r24, 0x1F	; 31
+ 226:	9e e4       	ldi	r25, 0x4E	; 78
+ 228:	01 97       	sbiw	r24, 0x01	; 1
+ 22a:	f1 f7       	brne	.-4      	; 0x228 <main+0x1bc>
+ 22c:	00 c0       	rjmp	.+0      	; 0x22e <main+0x1c2>
+ 22e:	00 00       	nop
+		_delay_ms(5);
+	}
+	void print(char *str)
+	{
+		int i;
+		for(i=0;str[i]!=0;i++)		// Send each char of string till the NULL
+ 230:	91 91       	ld	r25, Z+
+ 232:	91 11       	cpse	r25, r1
+ 234:	d4 cf       	rjmp	.-88     	; 0x1de <main+0x172>
+ 236:	9f ef       	ldi	r25, 0xFF	; 255
+ 238:	a3 ed       	ldi	r26, 0xD3	; 211
+ 23a:	b0 e3       	ldi	r27, 0x30	; 48
+ 23c:	91 50       	subi	r25, 0x01	; 1
+ 23e:	a0 40       	sbci	r26, 0x00	; 0
+ 240:	b0 40       	sbci	r27, 0x00	; 0
+ 242:	e1 f7       	brne	.-8      	; 0x23c <main+0x1d0>
+ 244:	00 c0       	rjmp	.+0      	; 0x246 <main+0x1da>
+ 246:	00 00       	nop
+class lcd{
+	private:
+	int RS, E, D4, D5, D6, D7;
+	void send_cmd(unsigned char cmd)
+	{
+		lcd_port = (lcd_port & 0x0F) | (cmd & 0xF0); //sending the higher nibble of the cmd to the last 4 pins of lcd_port
+ 248:	85 b3       	in	r24, 0x15	; 21
+ 24a:	8f 70       	andi	r24, 0x0F	; 15
+ 24c:	85 bb       	out	0x15, r24	; 21
+		lcd_port &= ~(1<<RS); //command register select (0)
+ 24e:	a8 98       	cbi	0x15, 0	; 21
+		lcd_port |= (1<<E); //making enable pin high, ready for receiving data
+ 250:	a9 9a       	sbi	0x15, 1	; 21
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 252:	25 e3       	ldi	r18, 0x35	; 53
+ 254:	2a 95       	dec	r18
+ 256:	f1 f7       	brne	.-4      	; 0x254 <main+0x1e8>
+ 258:	00 00       	nop
+		_delay_us(10);
+		lcd_port &= ~(1<<E); //turning off the Enable pin
+ 25a:	a9 98       	cbi	0x15, 1	; 21
+ 25c:	8f e1       	ldi	r24, 0x1F	; 31
+ 25e:	93 e0       	ldi	r25, 0x03	; 3
+ 260:	01 97       	sbiw	r24, 0x01	; 1
+ 262:	f1 f7       	brne	.-4      	; 0x260 <main+0x1f4>
+ 264:	00 c0       	rjmp	.+0      	; 0x266 <main+0x1fa>
+ 266:	00 00       	nop
+		
+		_delay_us(200);
+		lcd_port = (lcd_port & 0x0F) | (cmd << 4); //sending the higher nibble of the cmd to the last 4 pins of lcd_port
+ 268:	85 b3       	in	r24, 0x15	; 21
+ 26a:	8f 70       	andi	r24, 0x0F	; 15
+ 26c:	80 61       	ori	r24, 0x10	; 16
+ 26e:	85 bb       	out	0x15, r24	; 21
+		lcd_port &= ~(1<<RS); //command register select (0)
+ 270:	a8 98       	cbi	0x15, 0	; 21
+		lcd_port |= (1<<E); //making enable pin high, ready for receiving data
+ 272:	a9 9a       	sbi	0x15, 1	; 21
+ 274:	95 e3       	ldi	r25, 0x35	; 53
+ 276:	9a 95       	dec	r25
+ 278:	f1 f7       	brne	.-4      	; 0x276 <main+0x20a>
+ 27a:	00 00       	nop
+		_delay_us(10);
+		lcd_port &= ~(1<<E); //turning off the enable pin
+ 27c:	a9 98       	cbi	0x15, 1	; 21
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 27e:	af e1       	ldi	r26, 0x1F	; 31
+ 280:	be e4       	ldi	r27, 0x4E	; 78
+ 282:	11 97       	sbiw	r26, 0x01	; 1
+ 284:	f1 f7       	brne	.-4      	; 0x282 <main+0x216>
+ 286:	00 c0       	rjmp	.+0      	; 0x288 <main+0x21c>
+ 288:	00 00       	nop
+ 28a:	94 cf       	rjmp	.-216    	; 0x1b4 <main+0x148>
+
+0000028c <__itoa_ncheck>:
+ 28c:	bb 27       	eor	r27, r27
+ 28e:	4a 30       	cpi	r20, 0x0A	; 10
+ 290:	31 f4       	brne	.+12     	; 0x29e <__itoa_ncheck+0x12>
+ 292:	99 23       	and	r25, r25
+ 294:	22 f4       	brpl	.+8      	; 0x29e <__itoa_ncheck+0x12>
+ 296:	bd e2       	ldi	r27, 0x2D	; 45
+ 298:	90 95       	com	r25
+ 29a:	81 95       	neg	r24
+ 29c:	9f 4f       	sbci	r25, 0xFF	; 255
+ 29e:	0c 94 52 01 	jmp	0x2a4	; 0x2a4 <__utoa_common>
+
+000002a2 <__utoa_ncheck>:
+ 2a2:	bb 27       	eor	r27, r27
+
+000002a4 <__utoa_common>:
+ 2a4:	fb 01       	movw	r30, r22
+ 2a6:	55 27       	eor	r21, r21
+ 2a8:	aa 27       	eor	r26, r26
+ 2aa:	88 0f       	add	r24, r24
+ 2ac:	99 1f       	adc	r25, r25
+ 2ae:	aa 1f       	adc	r26, r26
+ 2b0:	a4 17       	cp	r26, r20
+ 2b2:	10 f0       	brcs	.+4      	; 0x2b8 <__utoa_common+0x14>
+ 2b4:	a4 1b       	sub	r26, r20
+ 2b6:	83 95       	inc	r24
+ 2b8:	50 51       	subi	r21, 0x10	; 16
+ 2ba:	b9 f7       	brne	.-18     	; 0x2aa <__utoa_common+0x6>
+ 2bc:	a0 5d       	subi	r26, 0xD0	; 208
+ 2be:	aa 33       	cpi	r26, 0x3A	; 58
+ 2c0:	08 f0       	brcs	.+2      	; 0x2c4 <__utoa_common+0x20>
+ 2c2:	a9 5d       	subi	r26, 0xD9	; 217
+ 2c4:	a1 93       	st	Z+, r26
+ 2c6:	00 97       	sbiw	r24, 0x00	; 0
+ 2c8:	79 f7       	brne	.-34     	; 0x2a8 <__utoa_common+0x4>
+ 2ca:	b1 11       	cpse	r27, r1
+ 2cc:	b1 93       	st	Z+, r27
+ 2ce:	11 92       	st	Z+, r1
+ 2d0:	cb 01       	movw	r24, r22
+ 2d2:	0c 94 6b 01 	jmp	0x2d6	; 0x2d6 <strrev>
+
+000002d6 <strrev>:
+ 2d6:	dc 01       	movw	r26, r24
+ 2d8:	fc 01       	movw	r30, r24
+ 2da:	67 2f       	mov	r22, r23
+ 2dc:	71 91       	ld	r23, Z+
+ 2de:	77 23       	and	r23, r23
+ 2e0:	e1 f7       	brne	.-8      	; 0x2da <strrev+0x4>
+ 2e2:	32 97       	sbiw	r30, 0x02	; 2
+ 2e4:	04 c0       	rjmp	.+8      	; 0x2ee <strrev+0x18>
+ 2e6:	7c 91       	ld	r23, X
+ 2e8:	6d 93       	st	X+, r22
+ 2ea:	70 83       	st	Z, r23
+ 2ec:	62 91       	ld	r22, -Z
+ 2ee:	ae 17       	cp	r26, r30
+ 2f0:	bf 07       	cpc	r27, r31
+ 2f2:	c8 f3       	brcs	.-14     	; 0x2e6 <strrev+0x10>
+ 2f4:	08 95       	ret
+
+000002f6 <_exit>:
+ 2f6:	f8 94       	cli
+
+000002f8 <__stop_program>:
+ 2f8:	ff cf       	rjmp	.-2      	; 0x2f8 <__stop_program>
